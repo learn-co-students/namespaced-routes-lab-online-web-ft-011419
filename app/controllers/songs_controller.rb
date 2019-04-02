@@ -25,13 +25,18 @@ class SongsController < ApplicationController
   end
 
   def new
-    @song = Song.new
+    @preferences = Preference.first
+    if @preferences && !@preferences.allow_create_songs
+      redirect_to songs_path
+    else
+      @song = Song.new
+    end
   end
 
   def create
     @song = Song.new(song_params)
 
-    if @song.save
+    if @song.save 
       redirect_to @song
     else
       render :new
@@ -66,5 +71,5 @@ class SongsController < ApplicationController
   def song_params
     params.require(:song).permit(:title, :artist_name)
   end
-end
 
+end
